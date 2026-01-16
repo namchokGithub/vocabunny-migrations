@@ -34,7 +34,7 @@ migrations/
 
 #### 1. Add new sql script to migration/db
 
-How to [Naming](#-🧱-migration-naming-convention).
+How to [Naming](#naming-rules).
 
 #### 2. Run postman to dev env to migration db up test
 > [POST] `http://localhost:1323/up`
@@ -66,6 +66,7 @@ How to [Naming](#-🧱-migration-naming-convention).
 
 ## 🧱 Migration Naming Convention
 
+### Naming Rules
 - Format: `X_description.sql`
 - Version numbers are incremental and start from `1`
 - Each migration must have a unique and increasing version number
