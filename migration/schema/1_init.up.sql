@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS tbl_logs (
+    id SERIAL PRIMARY KEY,
+    level VARCHAR(100) NULL,
+    message TEXT NULL,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
