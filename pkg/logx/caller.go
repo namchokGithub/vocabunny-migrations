@@ -19,5 +19,4 @@ func CallerPrettyfier(f *runtime.Frame) (string, string) {
 	}
 
 	return f.Function, fmt.Sprintf("%s:%d", f.File, f.Line)
-
 }

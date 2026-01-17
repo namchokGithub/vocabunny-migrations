@@ -49,6 +49,7 @@ func main() {
 		return
 	}
 
+	services.InitMigrationConfig()
 	ht := services.NewHandler(services.NewService(dbT))
 
 	e.POST("/up", ht.UpDB)
@@ -66,8 +67,8 @@ func main() {
 
 func initEcho() *echo.Echo {
 	e := echo.New()
-	e.HideBanner = true
-	e.HidePort = true
+	// e.HideBanner = true
+	// e.HidePort = true
 
 	return e
 }

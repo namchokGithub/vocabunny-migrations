@@ -5,6 +5,7 @@ import (
 	"errors"
 	"sort"
 	"strconv"
+	"sync"
 
 	"github.com/golang-migrate/migrate/v4"
 	migrateSQL "github.com/golang-migrate/migrate/v4/database/postgres"
@@ -26,25 +27,55 @@ func NewService(db *sql.DB) *Service {
 var (
 	dataMigrations = "data_migrations"
 
-	typeSortMapUp = map[string]int{
-		"schema": 1,
-		"data":   2,
+	schemaOrder = []string{
+		"schema_shared",
+		"schema_content",
+		"schema_identity",
+		"schema_actor",
+		"schema_media",
+		"schema_attempts",
+		"schema_streaks",
+		"schema_quests",
+		"schema_achievements",
+		"schema_stats",
+		"schema_leaderboard",
+		"schema_social",
+		"schema_economy",
+		"schema_items",
+		"schema_buffs",
+		"schema_analytics",
 	}
 
-	typeSortMapDown = map[string]int{
-		"schema": 2,
-		"data":   1,
-	}
+	typeSortMapUp   = map[string]int{}
+	typeSortMapDown = map[string]int{}
 
-	dataConfig = map[string]*migrateSQL.Config{
-		"schema": {
-			MigrationsTable: migrateSQL.DefaultMigrationsTable,
-		},
-		"data": {
-			MigrationsTable: dataMigrations,
-		},
-	}
+	dataConfig = map[string]*migrateSQL.Config{}
+
+	initOnce sync.Once
 )
+
+func InitMigrationConfig() {
+	initOnce.Do(func() {
+		for i, schemaType := range schemaOrder {
+			typeSortMapUp[schemaType] = i + 1
+			dataConfig[schemaType] = &migrateSQL.Config{
+				MigrationsTable: migrateSQL.DefaultMigrationsTable,
+			}
+		}
+
+		typeSortMapUp["data"] = len(schemaOrder) + 1
+		dataConfig["data"] = &migrateSQL.Config{
+			MigrationsTable: dataMigrations,
+		}
+
+		typeSortMapDown["data"] = 1
+		order := 2
+		for i := len(schemaOrder) - 1; i >= 0; i-- {
+			typeSortMapDown[schemaOrder[i]] = order
+			order++
+		}
+	})
+}
 
 func (s *Service) Up(req *Request, filePath map[string]string) error {
 	sortRequestUp(req)
@@ -59,7 +90,7 @@ func (s *Service) Up(req *Request, filePath map[string]string) error {
 
 		file := filePath[_type]
 		logx.GetLog().Infof("Migrated file path : %s", file)
-		m, err := migrate.NewWithDatabaseInstance(file, "mysql", driver)
+		m, err := migrate.NewWithDatabaseInstance(file, "postgres", driver)
 		if err != nil {
 			logx.GetLog().Errorf("migration failed... %v", err)
 			return err

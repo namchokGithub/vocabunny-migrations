@@ -1,0 +1,21 @@
+-- Generated from dbml/vocabunny.dbml
+DROP TYPE IF EXISTS buff_type;
+DROP TYPE IF EXISTS item_consumption_reason;
+DROP TYPE IF EXISTS shop_order_status;
+DROP TYPE IF EXISTS gacha_roll_type;
+DROP TYPE IF EXISTS item_type;
+DROP TYPE IF EXISTS coin_source_type;
+DROP TYPE IF EXISTS actor_relation_type;
+DROP TYPE IF EXISTS exp_source;
+DROP TYPE IF EXISTS trophy_tier_code;
+DROP TYPE IF EXISTS quest_event_type;
+DROP TYPE IF EXISTS daily_quest_strategy;
+DROP TYPE IF EXISTS quest_type;
+DROP TYPE IF EXISTS attempt_status;
+DROP TYPE IF EXISTS storage_provider;
+DROP TYPE IF EXISTS media_purpose_type;
+DROP TYPE IF EXISTS media_asset_type;
+DROP TYPE IF EXISTS storage_mode;
+DROP TYPE IF EXISTS permission_code;
+DROP TYPE IF EXISTS role_name;
+DROP TYPE IF EXISTS user_status;
