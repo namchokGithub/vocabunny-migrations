@@ -13,7 +13,7 @@ its own database schema while sharing common migration standards.
 
 ---
 
-## 📂 Structure (Not completed yet)
+## Structure
 
 <details>
   <summary>คลิกเพื่อดูโครงสร้างไฟล์ (Migrations)</summary>
@@ -161,7 +161,7 @@ migrations/
 
 </details>
 
-## 🚀 Usage
+## Usage
 
 #### 1. Add new sql script to migration/db
 
@@ -197,7 +197,7 @@ How to [Naming](#naming-rules).
 }
 ```
 
-## 🧱 Migration Naming Convention
+## Migration Naming Convention
 
 ### Naming Rules
 
@@ -213,7 +213,7 @@ How to [Naming](#naming-rules).
 
 Once a migration is applied, it **must not be edited**.
 
-## 🌍 Supported Environments
+## Supported Environments
 
 - Development
 - Staging
@@ -221,13 +221,13 @@ Once a migration is applied, it **must not be edited**.
 
 Each environment should use a separate database instance.
 
-## 🔄 Rollback Policy
+## Rollback Policy
 
 - `down` migrations should be used only in development or staging
 - Production rollback should be handled via forward-fix migrations
 - Forced versioning must be used with caution
 
-## 🔌 Migration API
+## Migration API
 
 The migration endpoints are exposed by a dedicated internal service.
 They should not be publicly accessible and must be protected in non-development environments.
