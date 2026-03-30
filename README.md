@@ -15,161 +15,112 @@ its own database schema while sharing common migration standards.
 
 ## Structure
 
+Migrations are now stored in a single folder:
+
+```text
+migration/
+└── schema/
+    ├── 0001_shared_extensions.up.sql
+    ├── 0001_shared_extensions.down.sql
+    ├── ...
+    ├── 0053_items_item_consumptions.up.sql
+    └── 0053_items_item_consumptions.down.sql
+```
+
+This removes cross-folder ordering problems and keeps a single global migration version sequence in `schema_migrations`.
+
+## Ordered Migration List
+
+The current global order is:
+
 <details>
-  <summary>คลิกเพื่อดูโครงสร้างไฟล์ (Migrations)</summary>
+  <summary>details</summary>
 
 ```text
 migrations/
-├── schema_shared/
-│   ├── 0001_extensions.up.sql
-│   ├── 0001_extensions.down.sql
-│   ├── 0002_enums.up.sql
-│   ├── 0002_enums.down.sql
-│   ├── 0003_base_functions.up.sql
-│   └── 0003_base_functions.down.sql
-│
-├── schema_content/
-│   ├── 0001_init_sections.up.sql
-│   ├── 0001_init_sections.down.sql
-│   ├── 0002_init_lessons.up.sql
-│   ├── 0002_init_lessons.down.sql
-│   ├── 0003_init_units.up.sql
-│   ├── 0003_init_units.down.sql
-│   ├── 0004_init_question_sets.up.sql
-│   ├── 0004_init_question_sets.down.sql
-│   ├── 0005_init_questions.up.sql
-│   ├── 0005_init_questions.down.sql
-│   ├── 0006_init_question_choices.up.sql
-│   ├── 0006_init_question_choices.down.sql
-│   ├── 0007_init_tags.up.sql
-│   ├── 0007_init_tags.down.sql
-│   ├── 0008_init_question_tags.up.sql
-│   └── 0008_init_question_tags.down.sql
-│
-├── schema_identity/
-│   ├── 0001_init_users.up.sql
-│   ├── 0001_init_users.down.sql
-│   ├── 0002_init_roles.up.sql
-│   ├── 0002_init_roles.down.sql
-│   ├── 0003_init_user_roles.up.sql
-│   ├── 0003_init_user_roles.down.sql
-│   ├── 0004_init_role_permissions.up.sql
-│   ├── 0004_init_role_permissions.down.sql
-│   ├── 0005_init_auth_identities.up.sql
-│   └── 0005_init_auth_identities.down.sql
-│
-├── schema_actor/
-│   ├── 0001_init_actor_identity.up.sql
-│   ├── 0001_init_actor_identity.down.sql
-│   ├── 0002_init_guests.up.sql
-│   ├── 0002_init_guests.down.sql
-│   ├── 0003_init_user_devices.up.sql
-│   └── 0003_init_user_devices.down.sql
-│
-├── schema_media/
-│   ├── 0001_init_media_assets.up.sql
-│   └── 0001_init_media_assets.down.sql
-│
-├── schema_attempts/
-│   ├── 0001_init_question_set_attempts.up.sql
-│   ├── 0001_init_question_set_attempts.down.sql
-│   ├── 0002_init_question_attempts.up.sql
-│   ├── 0002_init_question_attempts.down.sql
-│   ├── 0003_init_actor_progress.up.sql
-│   └── 0003_init_actor_progress.down.sql
-│
-├── schema_streaks/
-│   ├── 0001_init_actor_streaks.up.sql
-│   ├── 0001_init_actor_streaks.down.sql
-│   ├── 0002_init_streak_events.up.sql
-│   ├── 0002_init_streak_events.down.sql
-│   ├── 0003_init_streak_milestones.up.sql
-│   ├── 0003_init_streak_milestones.down.sql
-│   ├── 0004_init_streak_rewards_claimed.up.sql
-│   └── 0004_init_streak_rewards_claimed.down.sql
-│
-├── schema_quests/
-│   ├── 0001_init_quest_definitions.up.sql
-│   ├── 0001_init_quest_definitions.down.sql
-│   ├── 0002_init_daily_quest_sets.up.sql
-│   ├── 0002_init_daily_quest_sets.down.sql
-│   ├── 0003_init_daily_quest_set_items.up.sql
-│   ├── 0003_init_daily_quest_set_items.down.sql
-│   ├── 0004_init_actor_daily_quests.up.sql
-│   ├── 0004_init_actor_daily_quests.down.sql
-│   ├── 0005_init_quest_events.up.sql
-│   └── 0005_init_quest_events.down.sql
-│
-├── schema_achievements/
-│   ├── 0001_init_trophy_tiers.up.sql
-│   ├── 0001_init_trophy_tiers.down.sql
-│   ├── 0002_init_actor_monthly_progress.up.sql
-│   ├── 0002_init_actor_monthly_progress.down.sql
-│   ├── 0003_init_actor_trophies.up.sql
-│   ├── 0003_init_actor_trophies.down.sql
-│   ├── 0004_init_actor_showcase.up.sql
-│   └── 0004_init_actor_showcase.down.sql
-│
-├── schema_stats/
-│   ├── 0001_init_exp_ledger.up.sql
-│   ├── 0001_init_exp_ledger.down.sql
-│   ├── 0002_init_actor_stats.up.sql
-│   └── 0002_init_actor_stats.down.sql
-│
-├── schema_leaderboard/
-│   ├── 0001_init_leaderboard_weekly.up.sql
-│   └── 0001_init_leaderboard_weekly.down.sql
-│
-├── schema_social/
-│   ├── 0001_init_actor_relations.up.sql
-│   └── 0001_init_actor_relations.down.sql
-│
-├── schema_economy/
-│   ├── 0001_init_actor_wallets.up.sql
-│   ├── 0001_init_actor_wallets.down.sql
-│   ├── 0002_init_coin_ledger.up.sql
-│   ├── 0002_init_coin_ledger.down.sql
-│   ├── 0003_init_coin_transactions.up.sql
-│   └── 0003_init_coin_transactions.down.sql
-│
-├── schema_items/
-│   ├── 0001_init_item_catalog.up.sql
-│   ├── 0001_init_item_catalog.down.sql
-│   ├── 0002_init_actor_inventory.up.sql
-│   ├── 0002_init_actor_inventory.down.sql
-│   ├── 0003_init_gacha_rolls.up.sql
-│   ├── 0003_init_gacha_rolls.down.sql
-│   ├── 0004_init_shop_orders.up.sql
-│   ├── 0004_init_shop_orders.down.sql
-│   ├── 0005_init_shop_order_items.up.sql
-│   ├── 0005_init_shop_order_items.down.sql
-│   ├── 0006_init_shop_purchase_requests.up.sql
-│   ├── 0006_init_shop_purchase_requests.down.sql
-│   ├── 0007_init_item_consumptions.up.sql
-│   └── 0007_init_item_consumptions.down.sql
-│
-├── schema_buffs/
-│   ├── 0001_init_actor_buffs.up.sql
-│   ├── 0001_init_actor_buffs.down.sql
-│   ├── 0002_init_buff_activation_requests.up.sql
-│   └── 0002_init_buff_activation_requests.down.sql
-│
-└── schema_analytics/
-    ├── 0001_init_analytics_events.up.sql
-    └── 0001_init_analytics_events.down.sql
+└── schema/
+    ├── 0001_shared_extensions
+    ├── 0002_shared_enums
+    ├── 0003_shared_base_functions
+    ├── 0004_identity_users
+    ├── 0005_identity_roles
+    ├── 0006_identity_user_roles
+    ├── 0007_identity_role_permissions
+    ├── 0008_identity_auth_identities
+    ├── 0009_actor_guests
+    ├── 0010_actor_identity
+    ├── 0011_actor_user_devices
+    ├── 0012_media_assets
+    ├── 0013_content_sections
+    ├── 0014_content_lessons
+    ├── 0015_content_units
+    ├── 0016_content_question_sets
+    ├── 0017_content_questions
+    ├── 0018_content_question_choices
+    ├── 0019_content_tags
+    ├── 0020_content_question_tags
+    ├── 0021_items_catalog
+    ├── 0022_items_actor_inventory
+    ├── 0023_items_gacha_rolls
+    ├── 0024_items_shop_orders
+    ├── 0025_items_shop_order_items
+    ├── 0026_items_shop_purchase_requests
+    ├── 0027_quests_definitions
+    ├── 0028_quests_daily_quest_sets
+    ├── 0029_quests_daily_quest_set_items
+    ├── 0030_quests_actor_daily_quests
+    ├── 0031_quests_quest_events
+    ├── 0032_attempts_question_set_attempts
+    ├── 0033_attempts_question_attempts
+    ├── 0034_attempts_actor_progress
+    ├── 0035_streaks_actor_streaks
+    ├── 0036_streaks_streak_events
+    ├── 0037_streaks_streak_milestones
+    ├── 0038_streaks_streak_rewards_claimed
+    ├── 0039_achievements_trophy_tiers
+    ├── 0040_achievements_actor_monthly_progress
+    ├── 0041_achievements_actor_trophies
+    ├── 0042_achievements_actor_showcase
+    ├── 0043_stats_exp_ledger
+    ├── 0044_stats_actor_stats
+    ├── 0045_leaderboard_weekly
+    ├── 0046_social_actor_relations
+    ├── 0047_economy_actor_wallets
+    ├── 0048_economy_coin_ledger
+    ├── 0049_economy_coin_transactions
+    ├── 0050_buffs_actor_buffs
+    ├── 0051_buffs_buff_activation_requests
+    ├── 0052_analytics_events
+    └── 0053_items_item_consumptions
 ```
 
 </details>
 
-## Usage
+Every version must have both an `.up.sql` and `.down.sql` file with the same version prefix.
 
-#### 1. Add new sql script to migration/db
+## API Usage
 
-How to [Naming](#naming-rules).
+Start the service:
 
-#### 2. Run postman to dev env to migration db up test
+```bash
+go run .
+```
 
-> [POST] `http://localhost:1323/up`
+Health check:
+
+```bash
+curl http://localhost:1323/health
+```
+
+Run all migrations:
+
+```bash
+curl -X POST http://localhost:1323/up \
+  -H 'Content-Type: application/json' \
+  -d '{}'
+```
+
+The default payload resolves to:
 
 ```json
 {
@@ -182,56 +133,33 @@ How to [Naming](#naming-rules).
 }
 ```
 
-#### 3. How to sit migration down
+Rollback with explicit step count:
 
-> [POST] `http://localhost:1323/down`
-
-```json
-{
-  "migrations": [
-    {
-      "type": "schema",
-      "forceVersion": 0
-    }
-  ]
-}
+```bash
+curl -X POST http://localhost:1323/down \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "migrations": [
+      {
+        "type": "schema",
+        "forceVersion": 1
+      }
+    ]
+  }'
 ```
 
-## Migration Naming Convention
+## Naming Rules
 
-### Naming Rules
+- Format: `0001_domain_description.up.sql` and `0001_domain_description.down.sql`
+- Version numbers are global, unique, increasing, and zero-padded to 4 digits
+- Domain prefixes such as `shared`, `identity`, `actor`, `content`, or `items` are used for readability only
+- Once a migration has been applied in a shared environment, do not edit it; add a new migration instead
 
-- Format: `0001_description.up.sql` and `0001_description.down.sql`
-- Version numbers are incremental and start from `0001` (zero-padded to 4 digits)
-- Each migration must have a unique and increasing version number
+## Operational Notes
 
-### Examples
-
-- `0001_init_sections.up.sql` / `0001_init_sections.down.sql`
-- `0002_init_lessons.up.sql` / `0002_init_lessons.down.sql`
-- `0003_init_user_devices.up.sql` / `0003_init_user_devices.down.sql`
-
-Once a migration is applied, it **must not be edited**.
-
-## Supported Environments
-
-- Development
-- Staging
-- Production
-
-Each environment should use a separate database instance.
-
-## Rollback Policy
-
+- Use a fresh development database after renumbering or moving migration files
 - `down` migrations should be used only in development or staging
-- Production rollback should be handled via forward-fix migrations
-- Forced versioning must be used with caution
-
-## Migration API
-
-The migration endpoints are exposed by a dedicated internal service.
-They should not be publicly accessible and must be protected in non-development environments.
-</br></br>
+- Production rollback should be handled with forward-fix migrations when possible
 
 ---
 

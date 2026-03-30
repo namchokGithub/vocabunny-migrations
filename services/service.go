@@ -3,7 +3,6 @@ package services
 import (
 	"database/sql"
 	"errors"
-	"sort"
 	"strconv"
 	"sync"
 
@@ -25,62 +24,25 @@ func NewService(db *sql.DB) *Service {
 }
 
 var (
-	dataMigrations = "data_migrations"
-
-	schemaOrder = []string{
-		"schema_shared",
-		"schema_content",
-		"schema_identity",
-		"schema_actor",
-		"schema_media",
-		"schema_attempts",
-		"schema_streaks",
-		"schema_quests",
-		"schema_achievements",
-		"schema_stats",
-		"schema_leaderboard",
-		"schema_social",
-		"schema_economy",
-		"schema_items",
-		"schema_buffs",
-		"schema_analytics",
-	}
-
-	typeSortMapUp   = map[string]int{}
-	typeSortMapDown = map[string]int{}
-
-	dataConfig = map[string]*migrateSQL.Config{}
-
-	initOnce sync.Once
+	defaultMigrationType = "schema"
+	dataConfig           = map[string]*migrateSQL.Config{}
+	initOnce             sync.Once
 )
 
 func InitMigrationConfig() {
 	initOnce.Do(func() {
-		for i, schemaType := range schemaOrder {
-			typeSortMapUp[schemaType] = i + 1
-			dataConfig[schemaType] = &migrateSQL.Config{
-				MigrationsTable: migrateSQL.DefaultMigrationsTable,
-			}
-		}
-
-		typeSortMapUp["data"] = len(schemaOrder) + 1
-		dataConfig["data"] = &migrateSQL.Config{
-			MigrationsTable: dataMigrations,
-		}
-
-		typeSortMapDown["data"] = 1
-		order := 2
-		for i := len(schemaOrder) - 1; i >= 0; i-- {
-			typeSortMapDown[schemaOrder[i]] = order
-			order++
+		dataConfig[defaultMigrationType] = &migrateSQL.Config{
+			MigrationsTable: migrateSQL.DefaultMigrationsTable,
 		}
 	})
 }
 
 func (s *Service) Up(req *Request, filePath map[string]string) error {
-	sortRequestUp(req)
 	for _, migration := range req.Migrations {
 		_type := migration.Type
+		if _, ok := dataConfig[_type]; !ok {
+			return errors.New("unsupported migration type: " + _type)
+		}
 		logx.GetLog().Infof("Migrated Type : %s", _type)
 		driver, err := migrateSQL.WithInstance(s.db, dataConfig[_type])
 		if err != nil {
@@ -115,9 +77,11 @@ func (s *Service) Up(req *Request, filePath map[string]string) error {
 }
 
 func (s *Service) Down(req *Request, filePath map[string]string) error {
-	sortRequestDown(req)
 	for _, migration := range req.Migrations {
 		_type := migration.Type
+		if _, ok := dataConfig[_type]; !ok {
+			return errors.New("unsupported migration type: " + _type)
+		}
 		logx.GetLog().Infof("Migrated Type : %s", _type)
 		driver, err := migrateSQL.WithInstance(s.db, dataConfig[_type])
 		if err != nil {
@@ -127,7 +91,7 @@ func (s *Service) Down(req *Request, filePath map[string]string) error {
 
 		file := filePath[_type]
 		logx.GetLog().Infof("Migrated file path : %s", file)
-		m, err := migrate.NewWithDatabaseInstance(file, "mysql", driver)
+		m, err := migrate.NewWithDatabaseInstance(file, "postgres", driver)
 		if err != nil {
 			logx.GetLog().Errorf("migration failed... %v", err)
 			return err
@@ -146,26 +110,4 @@ func (s *Service) Down(req *Request, filePath map[string]string) error {
 	}
 
 	return nil
-}
-
-func sortRequestUp(req *Request) {
-	sort.SliceStable(req.Migrations, func(i, j int) bool {
-		typeI := req.Migrations[i].Type
-		typeJ := req.Migrations[j].Type
-		if typeSortMapUp[typeI] < typeSortMapUp[typeJ] {
-			return true
-		}
-		return false
-	})
-}
-
-func sortRequestDown(req *Request) {
-	sort.SliceStable(req.Migrations, func(i, j int) bool {
-		typeI := req.Migrations[i].Type
-		typeJ := req.Migrations[j].Type
-		if typeSortMapDown[typeI] < typeSortMapDown[typeJ] {
-			return true
-		}
-		return false
-	})
 }
