@@ -133,6 +133,25 @@ The default payload resolves to:
 }
 ```
 
+Run schema and data migrations together:
+
+```bash
+curl -X POST http://localhost:1323/up \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "migrations": [
+      {
+        "type": "schema",
+        "forceVersion": 0
+      },
+      {
+        "type": "data",
+        "forceVersion": 0
+      }
+    ]
+  }'
+```
+
 Rollback with explicit step count:
 
 ```bash

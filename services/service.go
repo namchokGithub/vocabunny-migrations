@@ -34,6 +34,9 @@ func InitMigrationConfig() {
 		dataConfig[defaultMigrationType] = &migrateSQL.Config{
 			MigrationsTable: migrateSQL.DefaultMigrationsTable,
 		}
+		dataConfig["data"] = &migrateSQL.Config{
+			MigrationsTable: "data_migrations",
+		}
 	})
 }
 

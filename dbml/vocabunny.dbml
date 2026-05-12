@@ -154,6 +154,7 @@ Ref: tbl_question_choices.question_id > tbl_questions.id
 Table tbl_tags {
   id uuid [pk, note: 'Primary key ของ tag ใช้ UUID เพื่อรองรับการขยายระบบและการอ้างอิงข้ามตาราง']
   name text [not null, unique, note: 'ชื่อ tag ต้องไม่ซ้ำ ใช้สำหรับจัดหมวดหมู่และค้นหาคำถาม']
+  color text [note: 'รหัสสีของ tag ในรูปแบบ HEX เช่น #60A5FA ใช้สำหรับแสดงผลบน UI']
 
   created_by uuid [note: 'user_id ของ admin หรือ content editor ที่สร้างตัวเลือกคำตอบ (optional)']
   updated_by uuid [note: 'user_id ของ admin หรือ content editor ที่แก้ไขตัวเลือกคำตอบล่าสุด (optional)']

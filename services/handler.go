@@ -71,5 +71,6 @@ func initDefault() {
 	}
 	filePath = map[string]string{
 		"schema": "file://migration/schema",
+		"data":   "file://migration/data",
 	}
 }
